@@ -22,6 +22,7 @@ import {
   Linking,
   Appearance,
   AppState,
+  DevSettings,
 } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -53,7 +54,7 @@ import LocaleProvider, { i18n } from "./context/Locale";
 import RebootProvider from "./context/Reboot";
 import ButtonUseTouchable from "./context/ButtonUseTouchable";
 import AuthPass from "./context/AuthPass";
-import LedgerStoreProvider from "./context/LedgerStore";
+import LedgerStoreProvider, { store } from "./context/LedgerStore";
 import LoadingApp from "./components/LoadingApp";
 import StyledStatusBar from "./components/StyledStatusBar";
 import AnalyticsConsole from "./components/AnalyticsConsole";
@@ -398,6 +399,12 @@ const DeepLinkingNavigator = ({ children }: { children: React$Node }) => {
     AppState.addEventListener("change", osThemeChangeHandler);
     return () => AppState.removeEventListener("change", osThemeChangeHandler);
   }, [compareOsTheme]);
+
+  useEffect(() => {
+    DevSettings.addMenuItem('Toggle theme', () => {
+      dispatch(setTheme(theme === "dark" ? "light" : "dark"));
+    })
+  }, [dispatch, theme])
 
   if (!isReady) {
     return null;
